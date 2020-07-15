@@ -63,35 +63,13 @@ void Sonar::median_filter(int16_t *sonarData, int16_t *resultData)
 }
 
 
-//목적 : CURVE RATE를 계산
-//개요 : RPM DATA 를 이용하여 카트가 얼마나 크게 커브를 도는지 계산한다. curve_rate_constant 가 클수록 크게 도는 것이다.
-// parameter
-// 
-void Sonar::make_curve_rate_constant(int *rpmData)
-{
-    if (fabs(rpmData[0]-rpmData[1])<15) // 양쪽 모터 RPM 이 같을 경우 curve_rate_constant 가 무한대가 되기때문에 임의로 큰수를 설정하였다.
-    {
-        this->curve_rate_constant = MAX_RPM_LIMIT;
-    }
-    else if(rpmData[0]>rpmData[1])
-    {
-        this->curve_rate_constant = static_cast<float>(rpmData[1])/(rpmData[0]-rpmData[1]);//float 계산을 위해 int rpmData를 float으로 형변환시켜주었다.
-    }
-    else if (rpmData[0]<rpmData[1])
-    {
-        this->curve_rate_constant = static_cast<float>(rpmData[0])/(rpmData[1]-rpmData[0]);//float 계산을 위해 int rpmData를 float으로 형변환시켜주었다.
-    }
-    
 
-    printf("curve rate constant : %f\n",this->curve_rate_constant);
-
-}
 
 // 목적 : 주변 물체를 감지하여 위험도 설정
 // 개요 : 초음파 데이터의 거리값에 따라 위험도를 판단
 // parameter : sonarStatus - 초음파 거리에 따른 위험도, sonarRisk - GUI에서 표현하기위해 int 형을 사용하는 위험도
 // return : 고정(0)
-int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, int *rpmData)
+int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, int *rpmData, CartDir cartDirection, CartRL LeftRightDecision)
 {
     int sum[SONAR_NUM];
     int status_sum = 0;

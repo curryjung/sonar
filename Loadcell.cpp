@@ -162,3 +162,47 @@ CartDir Loadcell::confirm_direction()
         return FF;
     }
 }
+
+CartRL Loadcell::confirm_leftright()
+{
+
+    //왼쪽오른쪽확인
+    // 방향 확인 //
+    if (this->mainData[0] > 0 && this->mainData[1] >  0)
+    {
+        return STRAIGHT;
+    }
+    else if (this->mainData[0] < 0 && this->mainData[1] < 0)
+    {
+        return STRAIGHT;
+    }
+    else if (this->mainData[0] < 0 && this->mainData[1] > 0)
+    {
+        return LEFT;
+    }
+    else if (this->mainData[0] > 0 && this->mainData[1] < 0)
+    {
+        return RIGHT;
+    }
+    else if (this->mainData[0] == 0 && this->mainData[1] < 0)
+    {
+        return RIGHT;
+    }
+    else if (this->mainData[0] < 0 && this->mainData[1] == 0)
+    {
+        return LEFT;
+    }
+    else if (this->mainData[0] == 0 && this->mainData[1] > 0)
+    {
+        return LEFT;
+    }
+    else if (this->mainData[0] > 0 && this->mainData[1] == 0)
+    {
+        return RIGHT;
+    }
+    else
+    {
+        return STRAIGHT;
+    }
+
+}

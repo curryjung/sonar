@@ -33,8 +33,7 @@ private:
 public:
     void set_up();
     void median_filter(int16_t *sonarData, int16_t *resultData);
-    void make_curve_rate_constant(int *rpmData);
-    int make_decision(SonarStat sonarStatus, int *sonarRisk, int *rpmData);
+    int make_decision(SonarStat sonarStatus, int *sonarRisk, int *rpmData, CartDir cartDirection, CartRL LeftRightDecision);
 
 };
 

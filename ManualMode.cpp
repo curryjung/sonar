@@ -24,16 +24,17 @@ ManualMode::~ManualMode()
 // parameter : rpmRawData - 모터 RPM, loadcellRawData - 로드셀 데이터, sonarRawData - 초음파 거리(mm)
 void ManualMode::get_sensor_data(int16_t *rpmRawData, float *loadcellRawData, int16_t *sonarRawData)
 {
-    // 초음파 센서 데이터 받기 //
-    printf("sonarRawData[0] : %d, sonar[1] : %d,sonar[2] : %d, sonar[3] : %d, sonar[4] : %d\n",sonarRawData[0],sonarRawData[1],sonarRawData[2],sonarRawData[3],sonarRawData[4]);
-    printf("rpmData[0] : %d, rpmData[1]:%d\n",this->rpmData[0],this->rpmData[1]);
-    this->sonar.median_filter(sonarRawData, this->sonarData);
-    this->sonar.make_curve_rate_constant(this->rpmData);
-    this->sonar.make_decision(sonarStatus, sonarRisk, this->rpmData);
+
 
     // Loadcell 데이터 받기 //
     this->loadCell.low_pass_filter(loadcellRawData, this->loadcellData);
     this->cartDirection = this->loadCell.confirm_direction();
+    this->LeftRightDecision = this->loadcell.confirm_leftright();
+    // 초음파 센서 데이터 받기 //
+    printf("sonarRawData[0] : %d, sonar[1] : %d,sonar[2] : %d, sonar[3] : %d, sonar[4] : %d\n",sonarRawData[0],sonarRawData[1],sonarRawData[2],sonarRawData[3],sonarRawData[4]);
+    printf("rpmData[0] : %d, rpmData[1]:%d\n",this->rpmData[0],this->rpmData[1]);
+    this->sonar.median_filter(sonarRawData, this->sonarData);
+
 
     //실험중//
     // this->loadcellData[0] *= 1.8;
@@ -91,13 +92,17 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     // else
     //     this->curveLimit = cartRpm * cartRpm * this->slowGraph[0] + cartRpm * this->slowGraph[1] + LOADCELL_DIF_INIT;
 
-    // 카트 상태에 따른 constant 값 변환 //
+    // 카트 상태에 따른 constant 값, cartDirection 값 변환 //
     int speedConstant = make_speed_constant(cartRpm);
     // printf("speedConstant : %d\n", speedConstant);
+
+    this->sonar.make_decision(sonarStatus, sonarRisk, this->cartDirection, this->LeftRightDecision);
 
     // 카트 방향에 따른 alpha 값 변환 //
     float alpha = make_alpha();
     // printf("alpha : %f\n", alpha);
+
+
 
     // 최종 RPM 데이터 생성 //
     rpmCalculate[0] = alpha * this->rpmData[0] + (1 - alpha) * speedConstant * this->loadcellData[0];
@@ -118,19 +123,7 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     rpm_limit(rpmResultData);
     
     // Sonar status 에 따른 모터 입력값 변환
-    if (this->sonarStatus == WARNN1)
-    {
-        rpmResultData[0] = 0.9*rpmResultData[0];
-        rpmResultData[1] = 0.9*rpmResultData[1];
-        printf("WARNN1\n");
-    }
-    else if (this->sonarStatus == WARNN2)
-    {
-        rpmResultData[0] = 0.8*rpmResultData[0];
-        rpmResultData[1] = 0.8*rpmResultData[1];
-        printf("WARNN2\n");
-    }
-    else if (this->sonarStatus == WARNN3)
+    if (this->sonarStatus == WARNN3)
     {
         rpmResultData[0] = 0;
         rpmResultData[1] = 0;
@@ -161,6 +154,9 @@ int ManualMode::make_speed_constant(int cartRpm)
     else if (this->cartDirection == FF && this->loadcellDifference > this->curveLimit) // 전진 상태에서 회전하려 할때
     {
         this->cartDirection = FC;
+        if()
+        else if()
+        
         return FF_CURVE_COEF;
     }
 

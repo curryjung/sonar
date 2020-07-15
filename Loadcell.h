@@ -36,6 +36,7 @@ public:
   void low_pass_filter(float *loadCellData, float *resultData);
   bool is_touched();
   CartDir confirm_direction();
+  CartRL confirm_leftright();
 };
 
 #endif

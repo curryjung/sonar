@@ -60,6 +60,7 @@ private:
     CartDir cartDirection;
     SonarStat sonarStatus;
     CartStat cartStatus;
+    CartRL LeftRightDecision;
     float loadcellDifference;
     float curveLimit;
 

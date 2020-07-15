@@ -50,6 +50,13 @@ enum CartDir
     BC
 };
 
+enum CartRL
+{
+    STRAIGHT = 0,
+    LEFT,
+    RIGHT
+}
+
 enum CartStat
 {
     STOP = 0,
