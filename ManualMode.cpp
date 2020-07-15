@@ -154,9 +154,14 @@ int ManualMode::make_speed_constant(int cartRpm)
     else if (this->cartDirection == FF && this->loadcellDifference > this->curveLimit) // 전진 상태에서 회전하려 할때
     {
         this->cartDirection = FC;
-        if()
-        else if()
-        
+        if(this->loadcellData[0] < this->loadcellData[1])
+        {
+            this->LeftRightDecision = LEFT;
+        }
+        else if(this->loadcellData[0] > this->loadcellData[1])
+        {
+            this->LeftRightDecision = RIGHT;
+        }
         return FF_CURVE_COEF;
     }
 
@@ -166,6 +171,14 @@ int ManualMode::make_speed_constant(int cartRpm)
     else if (this->cartDirection == BB && this->loadcellDifference > this->curveLimit) // 후진 상태에서 회전하려고 할때
     {
         this->cartDirection = BC;
+        if(this->loadcellData[0] < this->loadcellData[1])
+        {
+            this->LeftRightDecision = LEFT;
+        }
+        else if(this->loadcellData[0] > this->loadcellData[1])
+        {
+            this->LeftRightDecision = RIGHT;
+        }
         return BB_CURVE_COEF;
     }
 
@@ -178,6 +191,15 @@ int ManualMode::make_speed_constant(int cartRpm)
         else
         {
             return ROTATION_COEFFICIENT / 2;
+        }
+
+        if(this->cartDirection == LR)
+        {
+            this->LeftRightDecision = LEFT;
+        }
+        else if(this->cartDirection == RR)
+        {
+            this->LeftRightDecision = RIGHT;
         }
     }
     return 0;
