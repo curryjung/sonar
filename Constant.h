@@ -55,7 +55,7 @@ enum CartRL // 카트 머리의 방향
     STRAIGHT = 0, 
     LEFT,
     RIGHT
-}
+};
 
 enum CartStat
 {

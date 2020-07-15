@@ -14,8 +14,8 @@
 #define SONAR_NUM 6
 
 #define LIMIT_DIST_3 100 // distance limit value(cm)
-#define LIMIT_DIST_2 50
-#define LIMIT_DIST_1 30
+#define LIMIT_DIST_2 70
+#define LIMIT_DIST_1 50
 
 #define CURVE_BOUNDARY_1 0.75
 #define CURVE_BOUNDARY_2 1.15//예상값 : (카트 가로넓이*1)= 실험값 필요

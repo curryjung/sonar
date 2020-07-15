@@ -29,10 +29,10 @@ void ManualMode::get_sensor_data(int16_t *rpmRawData, float *loadcellRawData, in
     // Loadcell 데이터 받기 //
     this->loadCell.low_pass_filter(loadcellRawData, this->loadcellData);
     this->cartDirection = this->loadCell.confirm_direction();
-    this->LeftRightDecision = this->loadcell.confirm_leftright();
+    this->LeftRightDecision = this->loadCell.confirm_leftright();
     // 초음파 센서 데이터 받기 //
     printf("sonarRawData[0] : %d, sonar[1] : %d,sonar[2] : %d, sonar[3] : %d, sonar[4] : %d\n",sonarRawData[0],sonarRawData[1],sonarRawData[2],sonarRawData[3],sonarRawData[4]);
-    printf("rpmData[0] : %d, rpmData[1]:%d\n",this->rpmData[0],this->rpmData[1]);
+ 
     this->sonar.median_filter(sonarRawData, this->sonarData);
 
 
@@ -96,6 +96,7 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     int speedConstant = make_speed_constant(cartRpm);
     // printf("speedConstant : %d\n", speedConstant);
 
+    // sonarStatus 에 따른 sonarRisk 값 변경
     this->sonar.make_decision(sonarStatus, sonarRisk, this->cartDirection, this->LeftRightDecision);
 
     // 카트 방향에 따른 alpha 값 변환 //
@@ -129,8 +130,9 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
         rpmResultData[1] = 0;
         printf("WARNN3\n");
     }
-    else if (this->sonarStatus == NORMAL){
-        printf("Normal\n");
+    else
+    {
+        printf("sonarStatus is not WARNN3\n");
     }
         // 모터 입력을 위한 형변환 //
     for (int i = 0; i < 2; i++)
@@ -150,35 +152,45 @@ int ManualMode::make_speed_constant(int cartRpm)
 {
     // 상태와 차이값을 이용
     if (this->cartDirection == FF && this->loadcellDifference <= this->curveLimit) // 전진 상태에서 일자로 가려할때
+    {
+        printf("LeftRIghtDecision = STRAIGHT");
         return FF_COEFFICIENT;
+    }    
     else if (this->cartDirection == FF && this->loadcellDifference > this->curveLimit) // 전진 상태에서 회전하려 할때
     {
         this->cartDirection = FC;
         if(this->loadcellData[0] < this->loadcellData[1])
         {
             this->LeftRightDecision = LEFT;
+            printf("LeftRIghtDecision = LEFT");
         }
         else if(this->loadcellData[0] > this->loadcellData[1])
         {
             this->LeftRightDecision = RIGHT;
+            printf("LeftRIghtDecision = RIGHT");
         }
         return FF_CURVE_COEF;
     }
 
     else if (this->cartDirection == BB && this->loadcellDifference <= this->curveLimit) // 후진 상태에서 일자로 가려할때
+    {
+        printf("LeftRIghtDecision = STRAIGHT");
         return BB_COEFFICIENT;
-
+    }   
     else if (this->cartDirection == BB && this->loadcellDifference > this->curveLimit) // 후진 상태에서 회전하려고 할때
     {
         this->cartDirection = BC;
         if(this->loadcellData[0] < this->loadcellData[1])
         {
             this->LeftRightDecision = LEFT;
+            printf("LeftRIghtDecision = LEFT");
         }
         else if(this->loadcellData[0] > this->loadcellData[1])
         {
             this->LeftRightDecision = RIGHT;
+            printf("LeftRIghtDecision = RIGHT");
         }
+        
         return BB_CURVE_COEF;
     }
 
@@ -196,10 +208,13 @@ int ManualMode::make_speed_constant(int cartRpm)
         if(this->cartDirection == LR)
         {
             this->LeftRightDecision = LEFT;
+            printf("LeftRIghtDecision = LEFT");
+
         }
         else if(this->cartDirection == RR)
         {
             this->LeftRightDecision = RIGHT;
+            printf("LeftRIghtDecision = RIGHT");
         }
     }
     return 0;
