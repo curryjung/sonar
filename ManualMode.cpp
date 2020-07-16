@@ -98,7 +98,7 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     // printf("speedConstant : %d\n", speedConstant);
 
     // sonarStatus 에 따른 sonarRisk 값 변경
-    this->sonar.make_decision(this->sonarStatus, sonarRisk, this->cartDirection, this->LeftRightDecision);
+    this->sonarStatus = this->sonar.make_decision(sonarRisk, this->cartDirection, this->LeftRightDecision);
 
     // 카트 방향에 따른 alpha 값 변환 //
     float alpha = make_alpha();
@@ -124,11 +124,11 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
 
     
     // Sonar status 에 따른 모터 입력값 변환
-    if (*(this->sonarStatus) == WARNN3)
+    if (this->sonarStatus == WARNN3)
     {
         rpmResultData[0] = 0;
         rpmResultData[1] = 0;
-        printf("WARNN3\n");
+        printf("sonarStatus is WARNN3!!\n");
     }
     else
     {

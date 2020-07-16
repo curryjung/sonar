@@ -73,7 +73,7 @@ private:
     float make_alpha();
 
 public:
-    SonarStat *sonarStatus;
+    SonarStat sonarStatus;
     ManualMode(ATSCom *in);
     ~ManualMode();
     int sonarRisk[SONAR_NUM];
