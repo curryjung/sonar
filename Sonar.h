@@ -33,7 +33,7 @@ private:
 public:
     void set_up();
     void median_filter(int16_t *sonarData, int16_t *resultData);
-    int make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDirection, CartRL LeftRightDecision);
+    int make_decision(SonarStat *sonarStatus, int *sonarRisk, CartDir cartDirection, CartRL LeftRightDecision);
 
 };
 
