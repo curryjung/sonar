@@ -75,6 +75,7 @@ void ManualMode::make_graph(float *result, float fInit, float fMin_RPM, float fM
 void ManualMode::make_rpm(int16_t *rpmResultData)
 {
     float rpmCalculate[2]; // 계산하는 RPM
+    int16_t rpmCalculate_2[2];
     int cartRpm = (int)(fabs(this->rpmData[0]) + fabs(this->rpmData[1])) / 2; // 카트 속도
 
     this->loadcellDifference = fabs(this->loadcellData[0] - this->loadcellData[1]); // 로드셀 좌우 값의 차이
@@ -97,7 +98,7 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     // printf("speedConstant : %d\n", speedConstant);
 
     // sonarStatus 에 따른 sonarRisk 값 변경
-    this->sonar.make_decision(sonarStatus, sonarRisk, this->cartDirection, this->LeftRightDecision);
+    this->sonar.make_decision(this->sonarStatus, sonarRisk, this->cartDirection, this->LeftRightDecision);
 
     // 카트 방향에 따른 alpha 값 변환 //
     float alpha = make_alpha();
@@ -117,14 +118,13 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
 
     for (int i = 0; i < 2; i++)
     {
-        rpmResultData[i] = round(rpmCalculate[i]);
+        rpmCalculate_2[i] = round(rpmCalculate[i]);
     }    
     
-    //rpm 제한
-    rpm_limit(rpmResultData);
+
     
     // Sonar status 에 따른 모터 입력값 변환
-    if (this->sonarStatus == WARNN3)
+    if (*(this->sonarStatus) == WARNN3)
     {
         rpmResultData[0] = 0;
         rpmResultData[1] = 0;
@@ -132,14 +132,18 @@ void ManualMode::make_rpm(int16_t *rpmResultData)
     }
     else
     {
+        for (int i = 0; i < 2; i++)
+        {
+        rpmResultData[i] = rpmCalculate_2[i];
+        }
+
+
         printf("sonarStatus is not WARNN3\n");
     }
         // 모터 입력을 위한 형변환 //
-    for (int i = 0; i < 2; i++)
-    {
-        rpmResultData[i] = round(rpmCalculate[i]);
-    }
 
+        //rpm 제한
+    rpm_limit(rpmResultData);
 
     printf("make rpm : %d\t%d\n", rpmResultData[0], rpmResultData[1]);
 }

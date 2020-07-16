@@ -69,7 +69,7 @@ void Sonar::median_filter(int16_t *sonarData, int16_t *resultData)
 // 개요 : 초음파 데이터의 거리값에 따라 위험도를 판단
 // parameter : sonarStatus - 초음파 거리에 따른 위험도, sonarRisk - GUI에서 표현하기위해 int 형을 사용하는 위험도
 // return : 고정(0)
-int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDirection, CartRL LeftRightDecision)
+int Sonar::make_decision(SonarStat *sonarStatus, int *sonarRisk, CartDir cartDirection, CartRL LeftRightDecision)
 {
 	int sum[SONAR_NUM];
     int status_sum = 0;
@@ -132,23 +132,23 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
         //전방 sonar 만 확인
         if(sonarRisk[2] == 1)//전방 센서만 확인
         {
-		sonarStatus = WARNN3;
+		*sonarStatus = WARNN3;
 		printf("전진, sonarStatus = WARNN3");
 
 			return 0;                
 		}
 		else if(sonarRisk[2] ==2)
 		{
-			sonarStatus = WARNN2;
+			*sonarStatus = WARNN2;
 			return 0;                
 		}
 		else if(sonarRisk[2] ==3)
 		{
-			sonarStatus = WARNN1;
+			*sonarStatus = WARNN1;
 			return 0;
 		}
 		else{
-			sonarStatus = NORMAL;
+			*sonarStatus = NORMAL;
 			return 0;
 		}
     
@@ -161,22 +161,22 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
         {
             if((sonarRisk[2]==1)||(sonarRisk[1]==1))//전방 및 좌측전방센서 확인
             {
-                sonarStatus = WARNN3;
+                *sonarStatus = WARNN3;
 				printf("왼쪽커브, sonarStatus = WARNN3");
                 return 0;   
             }
             else if((sonarRisk[2]==2)||(sonarRisk[1]==2))
             {
-                sonarStatus = WARNN2;
+                *sonarStatus = WARNN2;
                 return 0;
             }
             else if((sonarRisk[2]==3)||(sonarRisk[1]==3))
             {
-                sonarStatus = WARNN1;
+                *sonarStatus = WARNN1;
                 return 0;
             }
             else{
-                sonarStatus = NORMAL;
+                *sonarStatus = NORMAL;
                 return 0;
             }   
         }
@@ -184,22 +184,22 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
         {
             if((sonarRisk[2]==1)||(sonarRisk[3]==1))//전방 및 우측전방센서 확인
             {
-                sonarStatus = WARNN3;
+                *sonarStatus = WARNN3;
 				printf("오른쪽 커브, sonarStatus = WARNN3");
                 return 0;   
             }
             else if((sonarRisk[2]==2)||(sonarRisk[3]==2))
             {
-                sonarStatus = WARNN2;
+                *sonarStatus = WARNN2;
                 return 0;
             }
             else if((sonarRisk[2]==3)||(sonarRisk[3]==3))
             {
-                sonarStatus = WARNN1;
+                *sonarStatus = WARNN1;
                 return 0;
             }
             else{
-                sonarStatus = NORMAL;
+                *sonarStatus = NORMAL;
                 return 0;
             }
         }
@@ -208,7 +208,7 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
 
     else if (cartDirection == BB||cartDirection == BC) // 후진 상태일때(커브, 직진 모두 포함)
     {
-        sonarStatus = NORMAL;
+        *sonarStatus = NORMAL;
     }
 
     else if (cartDirection == LR || cartDirection == RR) // 제자리 회전 하려고 할때
@@ -217,22 +217,22 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
         {
             if((sonarRisk[0]==1)||(sonarRisk[1]==1))//좌측전방 및 후방센서 확인
             {
-                sonarStatus = WARNN3;
+                *sonarStatus = WARNN3;
 				printf("좌회전, sonarStatus = WARNN3");
                 return 0;                
             }
             else if((sonarRisk[0]==2)||(sonarRisk[1]==2))
             {
-                sonarStatus = WARNN2;
+                *sonarStatus = WARNN2;
                 return 0;                
             }
             else if((sonarRisk[0]==3)||(sonarRisk[1]==3))
             {
-                sonarStatus = WARNN1;
+                *sonarStatus = WARNN1;
                 return 0;
             }
             else{
-                sonarStatus = NORMAL;
+                *sonarStatus = NORMAL;
                 return 0;
             }
         }
@@ -240,22 +240,22 @@ int Sonar::make_decision(SonarStat sonarStatus, int *sonarRisk, CartDir cartDire
         {
             if((sonarRisk[3]==1)||(sonarRisk[4]==1))//우측전방 및 우측후방센서 확인
         {
-            sonarStatus = WARNN3;
+            *sonarStatus = WARNN3;
 			printf("우회전, sonarStatus = WARNN3");
             return 0;   
         }
         else if((sonarRisk[3]==2)||(sonarRisk[4]==2))
         {
-            sonarStatus = WARNN2;
+            *sonarStatus = WARNN2;
             return 0;
         }
         else if((sonarRisk[3]==3)||(sonarRisk[4]==3))
         {
-            sonarStatus = WARNN1;
+            *sonarStatus = WARNN1;
             return 0;
         }
         else{
-            sonarStatus = NORMAL;
+            *sonarStatus = NORMAL;
             return 0;
         }
         }

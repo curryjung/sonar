@@ -58,7 +58,7 @@ private:
     int rpmData[2];
     int16_t sonarData[SONAR_NUM];
     CartDir cartDirection;
-    SonarStat sonarStatus;
+    SonarStat *sonarStatus;
     CartStat cartStatus;
     CartRL LeftRightDecision;
     float loadcellDifference;
